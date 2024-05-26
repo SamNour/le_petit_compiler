@@ -210,10 +210,6 @@ std::vector<Token> lexical_analysis(std::string &str) {
     } else if (buff == ".") {
       tokens.push_back(Token{TokenType::_dot, buff});
       buff.clear();
-    } else {
-        // This should not happen!
-        std::cerr << "This should not happen! Error: Unrecognized token: " << buff << std::endl;
-        exit(EXIT_FAILURE);
     }
 
     if (isspace(str[i])) {
