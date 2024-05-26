@@ -6,46 +6,44 @@
 #include <string>
 #include <vector>
 
-enum class TokenType
-{
-    _return,
-    EOF_,
-    _if,
-    _else,
-    _while,
-    _for,
-    _break,
-    _continue,
-    _int,
-    _float,
-    _char,
-    _string,
-    _bool,
-    _void,
-    _true,
-    _false,
-    _null,
-    _new,
-    _delete,
-    _this,
-    _super,
-    _class,
-    _interface,
-    _extends,
-    _implements,
-    _public,
-    _protected,
-    _private,
-    _static,
-    _final,
-    _abstract,
-    _native,
-    _synchronized,
-    _semicolon,
-    _comma,
-    _dot,
+enum class TokenType {
+  _return,
+  EOF_,
+  _if,
+  _else,
+  _while,
+  _for,
+  _break,
+  _continue,
+  _int,
+  _float,
+  _char,
+  _string,
+  _bool,
+  _void,
+  _true,
+  _false,
+  _null,
+  _new,
+  _delete,
+  _this,
+  _super,
+  _class,
+  _interface,
+  _extends,
+  _implements,
+  _public,
+  _protected,
+  _private,
+  _static,
+  _final,
+  _abstract,
+  _native,
+  _synchronized,
+  _semicolon,
+  _comma,
+  _dot,
 };
-
 
 const std::map<TokenType, std::string> TokenTypeString = {
     {TokenType::_return, "return"},
@@ -86,20 +84,20 @@ const std::map<TokenType, std::string> TokenTypeString = {
     {TokenType::_dot, "dot"},
 };
 
-struct Token{
-    TokenType type;
-    std::string value;
+struct Token {
+  TokenType type;
+  std::string value;
 
-    std::tuple<std::string, std::string> getToken(){
-        return std::make_tuple(TokenTypeString.at(type), value);
-    }
+  std::tuple<std::string, std::string> getToken() {
+    return std::make_tuple(TokenTypeString.at(type), value);
+  }
 };
-
 
 std::vector<Token> lexical_analysis(std::string &str) {
   std::vector<Token> tokens;
   std::string buff;
   for (int i = 0; i < str.size(); i++) {
+
 
     while (isalpha(str[i])) {
       buff.push_back(str[i]);
@@ -201,15 +199,6 @@ std::vector<Token> lexical_analysis(std::string &str) {
     } else if (buff == "synchronized") {
       tokens.push_back(Token{TokenType::_synchronized, buff});
       buff.clear();
-    } else if (buff == ";") {
-      tokens.push_back(Token{TokenType::_semicolon, buff});
-      buff.clear();
-    } else if (buff == ",") {
-      tokens.push_back(Token{TokenType::_comma, buff});
-      buff.clear();
-    } else if (buff == ".") {
-      tokens.push_back(Token{TokenType::_dot, buff});
-      buff.clear();
     }
 
     if (isspace(str[i])) {
@@ -225,9 +214,13 @@ std::vector<Token> lexical_analysis(std::string &str) {
       tokens.push_back(Token{TokenType::_int, buff});
       buff.clear();
     }
-    
+
+    if (str[i] == ';') {
+      tokens.push_back(Token{TokenType::_semicolon});
+      buff.clear();
+      i++;
+    }
   }
   return tokens;
 }
 #endif
-
