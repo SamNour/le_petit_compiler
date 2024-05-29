@@ -6,3 +6,6 @@
 !/src/lexcer.h
 !/LICENSE
 !/clean.sh
+!/src/generate_code.h
+!/src/parser.h
+!/docs/*

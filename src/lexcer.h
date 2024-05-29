@@ -30,7 +30,7 @@ struct Token {
 class Lexer {
 private:
   const std::string m_src{};
-  int m_curr{};
+  size_t m_curr{};
 
   std::optional<char> peak(int ahead = 1) const {
     if (m_curr + ahead >= m_src.size()) {
@@ -59,11 +59,11 @@ public:
         while (peak().has_value() && std::isalnum(peak().value())) {
           buff.push_back(consume());
         }
-        if (buff == "exit") {
+        if (buff == "exit")
           tokens.push_back(Token{TokenType::_exit, buff});
-        } else {
+        else
           throw std::runtime_error("Error: Token not found!");
-        }
+
         buff.clear();
       } else if (isspace(peak().value())) {
         consume();
@@ -78,9 +78,8 @@ public:
       } else if (peak().value() == ';') {
         consume();
         tokens.push_back(Token{TokenType::_semicolon});
-      } else {
+      } else
         throw std::runtime_error("Error: Token not found!");
-      }
     }
     restart_to_start_of_file();
     return tokens;
