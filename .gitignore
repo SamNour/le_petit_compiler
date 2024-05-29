@@ -1,32 +1,8 @@
-# Prerequisites
-*.d
+# Ignore everything
+/*
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-
-.vscode/
-src/txt.69
+# But not these files...
+!/src/main.cpp
+!/src/lexcer.h
+!/LICENSE
+!/clean.sh
