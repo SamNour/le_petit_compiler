@@ -11,6 +11,11 @@ enum class TokenType {
   _exit,
   _int,
   _semicolon,
+  _open_paranthesis,
+  _closed_paranthesis,
+  _identifier,
+  _let,
+  _ass,
 };
 
 const std::map<TokenType, std::string> TokenTypeMap = {
@@ -61,9 +66,10 @@ public:
         }
         if (buff == "exit")
           tokens.push_back(Token{TokenType::_exit, buff});
-        else
+        else if (buff == "let") {
+          tokens.push_back(Token{TokenType::_let, buff});
+        } else
           throw std::runtime_error("Error: Token not found!");
-
         buff.clear();
       } else if (isspace(peek().value())) {
         consume();
@@ -75,11 +81,22 @@ public:
         }
         tokens.push_back(Token{TokenType::_int, buff});
         buff.clear();
+      } else if (peek().value() == '(') {
+        consume();
+        tokens.push_back(Token{TokenType::_open_paranthesis});
+      } else if (peek().value() == ')') {
+        consume();
+        tokens.push_back(Token{TokenType::_closed_paranthesis});
+      } else if (peek().value() == '=') {
+        consume();
+        tokens.push_back(Token{TokenType::_ass});
       } else if (peek().value() == ';') {
         consume();
         tokens.push_back(Token{TokenType::_semicolon});
-      } else
-        throw std::runtime_error("Error: Token not found!");
+      } else {
+        tokens.push_back({.type = TokenType::_identifier, .value = buff});
+        buff.clear();
+      }
     }
     restart_to_start_of_file();
     return tokens;

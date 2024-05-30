@@ -10,17 +10,17 @@
 #include <vector>
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " <file.69>"
-              << "\n";
-    return EXIT_FAILURE;
-  }
+  // if (argc < 2) {
+  //   std::cerr << "Usage: " << argv[0] << " <file.69>"
+  //             << "\n";
+  //   return EXIT_FAILURE;
+  // }
 
   std::string str;
   { // reading the file
     std::stringstream contents;
-    std::ifstream file(argv[1]);
-    // std::ifstream file("txt.69");
+    // std::ifstream file(argv[1]);
+    std::ifstream file("txt.69");
     contents << file.rdbuf();
     str = contents.str();
   }

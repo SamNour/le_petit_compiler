@@ -7,19 +7,19 @@
 
 class Generator {
 private:
-  NodeExit m_root;
+  NodeProgram m_prog;
 
 public:
-  Generator(NodeExit &exit)
-      : m_root(exit){
+  Generator(NodeProgram &exit) : m_prog(exit){};
 
-        };
-
-  std::string generate() {
+  std::string generate_prog() {
     std::stringstream out;
     out << "global _start\n_start:\n";
+    for (const NodeStmt &stmt : m_prog.stmts) {
+      out << gen_stmt(stmt);
+    }
     out << "    mov rax, 60\n"; // exit code
-    out << "    mov rdi, " << m_root.expr.int_lit.value << "\n";
+    out << "    mov rdi, 0";
     out << "    syscall\n";
 
     return out.str();
