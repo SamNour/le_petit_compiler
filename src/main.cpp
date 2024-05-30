@@ -10,17 +10,17 @@
 #include <vector>
 
 int main(int argc, char **argv) {
-  // if (argc < 2) {
-  //   std::cerr << "Usage: " << argv[0] << " <file.69>"
-  //             << "\n";
-  //   return EXIT_FAILURE;
-  // }
+  if (argc < 2) {
+    std::cerr << "Usage: " << argv[0] << " <file.69>"
+              << "\n";
+    return EXIT_FAILURE;
+  }
 
   std::string str;
   { // reading the file
     std::stringstream contents;
-    // std::ifstream file(argv[1]);
-    std::ifstream file("txt.69");
+    std::ifstream file(argv[1]);
+    // std::ifstream file("txt.69");
     contents << file.rdbuf();
     str = contents.str();
   }
@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
   Parser parser(tokens);
   std::optional<NodeExit> tree = (parser.parse());
   if (!tree.has_value()) {
-    std::cerr << "Tree doesnot exit, are you in Debug mode?\n";
+    std::cerr << "Tree does not exist! Are you in debug-mode?\n";
   } else {
     NodeExit exit_node = tree.value();
     Generator gen(exit_node);
