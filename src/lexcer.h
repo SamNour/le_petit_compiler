@@ -64,13 +64,15 @@ public:
         while (peek().has_value() && std::isalnum(peek().value())) {
           buff.push_back(consume());
         }
-        if (buff == "exit")
+        if (buff == "exit") {
           tokens.push_back(Token{TokenType::_exit, buff});
-        else if (buff == "let") {
+          buff.clear();
+        } else if (buff == "let") {
           tokens.push_back(Token{TokenType::_let, buff});
-        } else
-          throw std::runtime_error("Error: Token not found!");
-        buff.clear();
+        } else {
+          tokens.push_back({.type = TokenType::_identifier, .value = buff});
+          buff.clear();
+        }
       } else if (isspace(peek().value())) {
         consume();
         buff.clear();

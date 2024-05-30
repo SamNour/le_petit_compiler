@@ -5,7 +5,7 @@ $$
     [\text{stmt}] &\to  
     \begin{cases}
     \text{exit}([\text{expr}]) \\
-    \exit{let} \space \text{ident} = [\text{expr}]
+    \text{let} \space \text{ident} = [\text{expr}]
     \end{cases}
     \\
     \text{expr} &\to 

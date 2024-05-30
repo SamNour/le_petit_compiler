@@ -14,6 +14,10 @@ struct NodeExprIdent {
   Token ident;
 };
 
+struct NodeExpr {
+  std::variant<NodeExprIntLit, NodeExprIdent> var;
+};
+
 struct NodeStmtExit {
   NodeExpr expr;
 };
@@ -25,10 +29,6 @@ struct NodeStmtLet {
 
 struct NodeStmt {
   std::variant<NodeStmtExit, NodeStmtLet> var;
-};
-
-struct NodeExpr {
-  std::variant<NodeExprIntLit, NodeExprIdent> var;
 };
 
 struct NodeProgram {
@@ -66,77 +66,77 @@ public:
         exit(EXIT_FAILURE);
       }
     }
+    return prog;
   }
 
   std::optional<NodeExpr> parse_expr() {
     if (peek().has_value()) {
-      if (peek().value().type == TokenType::_int)
+      if (peek().value().type == TokenType::_int) {
         return NodeExpr{
             .var = NodeExprIntLit{.int_lit = consume()}}; // consume int
-    } else if (peek().value().type == TokenType::_identifier) {
-      return NodeExpr{.var = NodeExprIdent{.ident = consume()}};
+      } else if (peek().value().type == TokenType::_identifier) {
+        return NodeExpr{.var = NodeExprIdent{.ident = consume()}};
+      }
     }
     return {};
   }
 
   std::optional<NodeStmt> parse_stmt() {
-    NodeStmtExit node_exit;
-    while (peek().has_value()) {
-      // case 1: exit statement
-      if (peek().value().type == TokenType::_exit) {
-        consume(); // consume exit
-        if (peek().has_value() &&
-            peek().value().type == TokenType::_open_paranthesis) {
-          consume(); // consume (
-        } else {
-          std::cerr << "Error: Expected an opening paranthesis after exit\n";
-          exit(EXIT_FAILURE);
-        }
 
-        if (auto node_expr = parse_expr()) {
-          NodeStmtExit node_exit = NodeStmtExit{.expr = node_expr.value()};
-        } else {
-          std::cerr << "Error: Invalid expression in exit statement\n";
-          exit(EXIT_FAILURE);
-        }
-        if (peek().has_value() &&
-            peek().value().type == TokenType::_closed_paranthesis) {
-          consume();
-        } else {
-          std::cerr << "Error: Expected a closing paranthesis\n";
-          exit(EXIT_FAILURE);
-        }
-        if (peek().has_value()) {
-          if (peek().value().type == TokenType::_semicolon) {
-            consume();
-          }
-        } else {
-          std::cerr << "Error: Expected a semicolon after exit statement\n";
-          exit(EXIT_FAILURE);
-        } // case 2: Identifier statement
-        return NodeStmt{.var = node_exit};
-      } else if (peek().value().type == TokenType::_let &&
-                 peek(1).value().type == TokenType::_identifier &&
-                 peek(2).value().type == TokenType::_ass) {
-        consume(); // let
-
-        auto stmt_let = NodeStmtLet{.ident = consume()};
-        consume(); // =
-        if (auto node_expr = parse_expr()) {
-          stmt_let.expr = node_expr.value();
-        } else {
-          std::cerr << "Error: Invalid expression for let statement\n";
-          exit(EXIT_FAILURE);
-        }
-        if (peek().has_value() &&
-            peek().value().type == TokenType::_semicolon) {
-          consume();
-        } else {
-          std::cerr << "Error: Expected a semicolon after exit statement\n";
-          exit(EXIT_FAILURE);
-        }
+    // case 1: exit statement
+    if (peek().value().type == TokenType::_exit) {
+      consume(); // consume exit
+      if (peek().has_value() &&
+          peek().value().type == TokenType::_open_paranthesis) {
+        consume(); // consume (
+      } else {
+        std::cerr << "Error: Expected an opening paranthesis after exit\n";
+        exit(EXIT_FAILURE);
       }
+      NodeStmtExit node_exit;
+      if (auto node_expr = parse_expr()) {
+        node_exit = {.expr = node_expr.value()};
+      } else {
+        std::cerr << "Error: Invalid expression in exit statement\n";
+        exit(EXIT_FAILURE);
+      }
+
+      if (peek().has_value() &&
+          peek().value().type == TokenType::_closed_paranthesis) {
+        consume();
+      } else {
+        std::cerr << "Error: Expected a closing paranthesis\n";
+        exit(EXIT_FAILURE);
+      }
+      if (peek().has_value()) {
+        if (peek().value().type == TokenType::_semicolon) {
+          consume();
+        }
+      } else {
+        std::cerr << "Error: Expected a semicolon after exit statement\n";
+        exit(EXIT_FAILURE);
+      } // case 2: Identifier statement
       return NodeStmt{.var = node_exit};
+    } else if (peek().value().type == TokenType::_let &&
+               peek(1).value().type == TokenType::_identifier &&
+               peek(2).value().type == TokenType::_ass) {
+      consume(); // let
+
+      auto stmt_let = NodeStmtLet{.ident = consume()};
+      consume(); // =
+      if (auto node_expr = parse_expr()) {
+        stmt_let.expr = node_expr.value();
+      } else {
+        std::cerr << "Error: Invalid expression for let statement\n";
+        exit(EXIT_FAILURE);
+      }
+      if (peek().has_value() && peek().value().type == TokenType::_semicolon) {
+        consume();
+      } else {
+        std::cerr << "Error: Expected a semicolon after exit statement\n";
+        exit(EXIT_FAILURE);
+      }
+      return NodeStmt{.var = stmt_let};
     }
     return {};
   }
