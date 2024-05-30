@@ -2,10 +2,10 @@
 /*
 
 # But not these files...
-!/src/main.cpp
-!/src/lexcer.h
+!src/main.cpp
+!src/lexcer.h
 !/LICENSE
 !/clean.sh
-!/src/generate_code.h
-!/src/parser.h
-!/docs/*
+!src/generate_code.h
+!src/parser.h
+!docs/*

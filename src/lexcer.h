@@ -32,11 +32,11 @@ private:
   const std::string m_src{};
   size_t m_curr{};
 
-  std::optional<char> peak(int ahead = 1) const {
+  std::optional<char> peek(int ahead = 0) const {
     if (m_curr + ahead >= m_src.size()) {
       return {};
     } else {
-      return m_src.at(m_curr);
+      return m_src.at(m_curr + ahead);
     }
   };
 
@@ -53,10 +53,10 @@ public:
   std::vector<Token> lexical_analysis() {
     std::vector<Token> tokens;
     std::string buff;
-    while (peak().has_value()) {
-      if (std::isalpha(peak().value())) {
+    while (peek().has_value()) {
+      if (std::isalpha(peek().value())) {
         buff.push_back(consume());
-        while (peak().has_value() && std::isalnum(peak().value())) {
+        while (peek().has_value() && std::isalnum(peek().value())) {
           buff.push_back(consume());
         }
         if (buff == "exit")
@@ -65,17 +65,17 @@ public:
           throw std::runtime_error("Error: Token not found!");
 
         buff.clear();
-      } else if (isspace(peak().value())) {
+      } else if (isspace(peek().value())) {
         consume();
         buff.clear();
-      } else if (isdigit(peak().value())) {
+      } else if (isdigit(peek().value())) {
         buff.push_back(consume());
-        while (peak().has_value() && isdigit(peak().value())) {
+        while (peek().has_value() && isdigit(peek().value())) {
           buff.push_back(consume());
         }
         tokens.push_back(Token{TokenType::_int, buff});
         buff.clear();
-      } else if (peak().value() == ';') {
+      } else if (peek().value() == ';') {
         consume();
         tokens.push_back(Token{TokenType::_semicolon});
       } else
