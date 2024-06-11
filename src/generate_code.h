@@ -8,12 +8,13 @@
 class Generator {
 private:
   struct Var {
-    size_t stack_loc;
+    size_t var_offset_on_stack;
   };
   NodeProgram m_prog;
   std::stringstream m_out;
   size_t m_stack_index{};
-  std::unordered_map<std::string, Var> hm_vars{};
+  /*Hash Map is used to prevent duplicate used of the same variables*/
+  std::unordered_map<std::string, Var> hm_vars{}; 
 
   void push(const std::string &reg) {
     m_out << "    push " << reg << "\n";
@@ -43,11 +44,26 @@ public:
       }
       const auto &hm_value = hm_vars.at(ident);
       std::stringstream offset;
-      offset << "QWORD [rsp + " << (m_stack_index - hm_value.stack_loc - 1) * 8
+      offset << "QWORD [rsp + " << (m_stack_index - hm_value.var_offset_on_stack - 1) * 8
              << "]\n";
       push(offset.str());
     }
   }
+  /*
+  Stack Layout:
+
+   ------
+  |   z  |  stack_index = 2
+   ------
+  |   y  |  stack_index = 1
+   ------
+  |   x  |  stack_index = 0
+   ------
+
+  Fetching x
+  QWORD [rsp + (2 - 1 - 1) * 8]  
+  
+  */
 
   void gen_stmt(const NodeStmt &stmt) {
     if (std::holds_alternative<NodeStmtExit>(stmt.var)) {
@@ -67,7 +83,7 @@ public:
       } else { // identifier was not used before!
 
         hm_vars.insert({std::get<NodeStmtLet>(stmt.var).ident.value,
-                        Var{.stack_loc = m_stack_index}});
+                        Var{.var_offset_on_stack = m_stack_index}});
 
         gen_expr(std::get<NodeStmtLet>(stmt.var).expr);
       }

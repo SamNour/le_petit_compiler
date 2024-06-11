@@ -1,2 +1,3 @@
 let x = 12;
-exit(x);
+let y = 24;
+exit(y);

@@ -54,6 +54,9 @@ private:
   }
 
 public:
+
+
+
   explicit Parser(std::vector<Token> &tokens) : m_tokens(tokens) {}
 
   std::optional<NodeProgram> parse_prog() {
@@ -116,13 +119,14 @@ public:
         std::cerr << "Error: Expected a semicolon after exit statement\n";
         exit(EXIT_FAILURE);
       } // case 2: Identifier statement
+      // NodeStmt { NodeStmtExit { NodeExpr { NodeExprIntLit { Token { _int}}}
       return NodeStmt{.var = node_exit};
     } else if (peek().value().type == TokenType::_let &&
                peek(1).value().type == TokenType::_identifier &&
                peek(2).value().type == TokenType::_ass) {
       consume(); // let
 
-      auto stmt_let = NodeStmtLet{.ident = consume()};
+      auto stmt_let = NodeStmtLet{.ident = consume()}; // ident
       consume(); // =
       if (auto node_expr = parse_expr()) {
         stmt_let.expr = node_expr.value();
@@ -136,6 +140,7 @@ public:
         std::cerr << "Error: Expected a semicolon after exit statement\n";
         exit(EXIT_FAILURE);
       }
+      // NodeStmt{NodeStmtLet{NodeExpr{Token{ident}, NodeExprIdent{Token{Ident}}}}}
       return NodeStmt{.var = stmt_let};
     }
     return {};

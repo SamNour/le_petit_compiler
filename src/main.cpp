@@ -9,6 +9,7 @@
 #include <string_view>
 #include <vector>
 
+
 int main(int argc, char **argv) {
   if (argc < 2) {
     std::cerr << "Usage: " << argv[0] << " <file.69>"
@@ -35,6 +36,7 @@ int main(int argc, char **argv) {
     std::cerr << "Tree does not exist! Are you in debug-mode?\n";
   } else {
     NodeProgram node_prog = prog.value();
+    print_program(node_prog);
     Generator gen(node_prog);
 
     std::string assembly = gen.generate_prog();
